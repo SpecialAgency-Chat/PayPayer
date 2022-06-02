@@ -1,5 +1,6 @@
 import axios from "axios";
-import { Client, Intents } from "discord.js";
+import { Client, Intents, Modal, ModalActionRowComponent, MessageActionRow, TextInputComponent } from "discord.js";
+import { PayPay } from "paypay.js";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
@@ -52,6 +53,21 @@ client.on("ready", (cl) => {
 client.on("interactionCreate", async (i) => {
   if (i.isCommand()) {
     const { commandName:command } = i;
-    if (command === "login") {}
+    if (command === "login") {
+      const p = new PayPay();
+      const modal = new Modal()
+        .setCustomId("login")
+        .setTitle("PayPayにログイン")
+        .setComponents(new MessageActionRow<ModalActionRowComponent>().addComponents(
+          new TextInputComponent()
+            .setCustomId("phone")
+            .setLabel("電話番号")
+            .setMaxLength(12)
+            .setMinLength(8)
+            .setPlaceholder("例: 08012345678")
+            .setRequired(true)
+            .setStyle("SHORT")
+        ))
+    }
   }
 });
