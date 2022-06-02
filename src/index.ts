@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Client, Intents, Modal, ModalActionRowComponent, MessageActionRow, TextInputComponent, type Snowflake } from "discord.js";
+import { Client, Intents, Modal, ModalActionRowComponent, MessageActionRow, TextInputComponent, type Snowflake, MessageButton } from "discord.js";
 import { PayPay, PayPayLoginStatus } from "paypay.js";
 import mongoose from "mongoose";
 
@@ -144,6 +144,11 @@ client.on("interactionCreate", async (i) => {
           const user: NonNullable<User> = await db.findOne({ id: i.user.id }) || new db();
           user.accounts.push({ phone: mi.fields.getTextInputValue("phone"), accessToken: result.accessToken });
           await user.save();
+        } else if (result.status === PayPayLoginStatus.OTP_REQUIRED) {
+          const but = new MessageButton()
+            .setCustomId("otp")
+            .setLabel("OTPを入力する")
+            .setStyle("PRIMARY")
         }
       } catch {
         await mi.followUp("ログインに失敗しました。");
